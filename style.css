@@ -1,0 +1,141 @@
+* {
+    font-family: monospace;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+    margin: 0;
+    background-color: #6D6D69;
+    height: 100%;
+}
+
+.editor {
+    position: relative;
+    margin: 10px;
+    height: 90%;
+}
+
+.text, .textarea{
+    font-size: 12px;
+}
+
+.text {
+    margin: 0;
+    top: 3px;
+    padding-left: 3px;
+    height: 100%;
+    position: absolute;
+    resize: none;
+    overflow: hidden;
+}
+
+.text_light{
+    background-color: #FFFFFF;
+    color: #000000;
+}
+
+.text_light + .textarea{
+    caret-color: #000000;
+}
+
+.text_dark{
+    background-color: #444444;
+    color: #FFFFFF;
+}
+
+.text_dark + .textarea{
+    caret-color: #FFFFFF;
+}
+
+.textarea {
+    position: absolute;
+    resize: none;
+    overflow: scroll;
+    background-color: rgba(0, 0, 0, 0);
+    width: 100%;
+    height: 100%;
+    border: none;
+    color: rgba(0, 0, 0, 0);
+    outline: none;
+}
+
+.autocomplete{
+    position: absolute;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    background-color: white;
+}
+
+.hasli{
+    border: 1px #6D6D69 solid;
+}
+
+.keyinput{
+    width: 10%;
+    height: 10%;
+    margin: 10px;
+    border: 3px black solid;
+    background-color: #FFFFFF;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.keyinput span{
+    font-size: 24px;
+}
+
+.selected{
+    background-color: #444444;
+    color: #FFFFFF;
+}
+
+.operator_light {
+    color: #FF0000;
+}
+
+.key_word_light, .key_word_light > span{
+    color: #0000FF;
+    font-weight: bold;
+}
+
+.digit_light {
+    color: #008000;
+}
+
+.comment_light, .comment_light *{
+    color: #6D6D69 !important;
+    font-weight: normal;
+}
+
+.string_light,.string_light *{
+    color: #800000;
+    font-weight: normal;
+}
+
+.operator_dark {
+    color: #ff0000;
+}
+
+.key_word_dark, .key_word_dark > span{
+    color: #fc6f09;
+    font-weight: bold;
+}
+
+.digit_dark {
+    color: #92f98e;
+}
+
+.comment_dark,.comment_dark *{
+    color: #6D6D69;
+    font-weight: normal;
+}
+
+.string_dark,.string_dark *{
+    color: #00afff; 
+    font-weight: normal;
+}
