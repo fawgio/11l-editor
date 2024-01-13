@@ -16,7 +16,7 @@ const functions = ['print(object = ‘’, end = "\\n")','input([prompt])','asse
 const auto = modules.concat(functions);
 
 const highlighterRules = [
-    {class: "string", filter: /()((?:")[^"]*(?:"))/g},
+    {class: "string", filter: /((?:‘)[^’]*(?:’))|((?:")[^"]*(?:"))/g},
     {class: "string", filter: /((?:")[^"]*(?:"))|((?:‘)[^’]*(?:’))/g},
     {class: "comment", filter: /((?:")[^"]*(?:")|(?:‘)[^’]*(?:’))|(\\\\.*|#41#41.*)/g},
     {class: "comment", filter: /()(\\\[[^\[]*\])/gsm},
