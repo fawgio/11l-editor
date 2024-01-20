@@ -3,7 +3,7 @@ It's a non-official editor and syntax highlighter for 11l. It can help you read 
 ## Supported features
 - Syntax highlighting
 - Writing pared quotes ‘ on alt+9 and ’ on alt+0
-- Autocompletion(on ctrl+enter)
+- Autocompletion(on ctrl+space)
 - Uploading and saving files
 - Dark and light themes
 - 11l Documentation search(on F1+Enter, while selecting a function or module in autocompletion menu)
