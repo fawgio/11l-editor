@@ -7,13 +7,17 @@ const autoul = document.getElementById('autocomplete');
 var theme = "light"
 
 const modules = ['f','os','fs','time','re','random','minheap','maxheap','bits','csv'];
+const keyLetters = ['C','E','F','I','L','N','R','S','T','V','X'];
+const keyWords = ['in','else','fn','if','loop','null','return','switch','type','var','exception',
+                    'exception.catch','exception.try','exception.try_end','F.args','F.destructor','F.virtual','fn.args','fn.destructor','fn.virtual','fn.virtual.abstract','fn.virtual.assign','fn.virtual.final','fn.virtual.new','fn.virtual.override','I.likely','I.unlikely','if.likely','if.unlikely','L.break','L.continue','L.index','L.last_iteration','L.next','L.on_break','L.on_continue','L.prev','L.remove_current_element_and_break','L.remove_current_element_and_continue','L.was_no_break','loop.break','loop.continue','loop.index','loop.last_iteration','loop.next','loop.on_break','loop.on_continue','loop.prev','loop.remove_current_element_and_break','loop.remove_current_element_and_continue','loop.was_no_break','S.break','S.fallthrough','switch.break','switch.fallthrough','T.base','T.enum','T.interface','type','type.base','type.enum','type.interface','X.catch','X.try','X.try_end',
+                    'F.virtual.abstract','F.virtual.assign','F.virtual.final','F.virtual.new','F.virtual.override'].concat(keyLetters);
 const functions = ['print(object = ‘’, end = "\\n")','input([prompt])','assert(expression, message = ‘’)','exit(message=N)',
                     'sleep(secs)','swap(&a, &b)','zip(iterable1, iterable2 [,iterable3])','all(iterable)','any(iterable)',
                     'cart_product(iterable1, iterable2 [,iterable3])','multiloop((iterable1, iterable2 [,iterable3], function))',
                     'multiloop_filtered(iterable1, iterable2 [,iterable3], filter_function, function)','sum(iterable)',
                     'sorted(iterable, key = N, reverse = 0B)','product(iterable)','min(iterable)','min(arg1,arg2)','max(iterable)','max(arg1,arg2)',
                     'hex(x)','bin(x)','rotl(value, shift)','rotr(value, shift)'];
-const auto = modules.concat(functions);
+const auto = keyWords.concat(functions).concat(modules);
 
 const highlighterRules = [
     {class: "string", filter: /(\\\\.*|#41#41.*|\\\[[^\[]*\]|\\\([^\)]*\)|\\{[^}]*}|\\‘[^’]*’|(?:‘)[^’]*(?:’))|((?:")[^"]*(?:"))/g},
@@ -23,7 +27,7 @@ const highlighterRules = [
     {class: "comment", filter: /()(\\\([^\)]*\))/gsm},
     {class: "comment", filter: /()(\\{[^}]*})/gsm},
     {class: "comment", filter: /()(\\‘[^’]*’)/gsm},
-    {class: "key_word", filter: /()(?<=[^\w]|^|\s)(F\.virtual\.abstract|F\.virtual\.assign|F\.virtual\.final|F\.virtual\.new|F\.virtual\.override)(?=[^\w]|$|\s)/g},
+    {class: "key_word", filter: /()(?<=[^\w]|^|\s)(F\.virtual\.abstract|F\.virtual\.assign|F\.virtual\.final|F\.virtual\.new|F\.virtual\.override|fn\.virtual\.abstract|fn\.virtual\.assign|fn\.virtual\.final|fn\.virtual\.new|fn\.virtual\.override)(?=[^\w]|$|\s)/g},
     {class: "key_word", filter: /()(?<=[^\w]|^|\s)(exception\.catch|exception\.try|exception\.try_end|F\.args|F\.destructor|F\.virtual|fn\.args|fn\.destructor|fn\.virtual|fn\.virtual\.abstract|fn\.virtual\.assign|fn\.virtual\.final|fn\.virtual\.new|fn\.virtual\.override|I\.likely|I\.unlikely|if\.likely|if\.unlikely|L\.break|L\.continue|L\.index|L\.last_iteration|L\.next|L\.on_break|L\.on_continue|L\.prev|L\.remove_current_element_and_break|L\.remove_current_element_and_continue|L\.was_no_break|loop\.break|loop\.continue|loop\.index|loop\.last_iteration|loop\.next|loop\.on_break|loop\.on_continue|loop\.prev|loop\.remove_current_element_and_break|loop\.remove_current_element_and_continue|loop\.was_no_break|S\.break|S\.fallthrough|switch\.break|switch\.fallthrough|T\.base|T\.enum|T\.interface|type|type\.base|type\.enum|type\.interface|X\.catch|X\.try|X\.try_end)(?=[^\w]|$|\s)/g},
     {class: "key_word", filter: /()(?<=[^\w']|^|\s)(C|E|else|exception|F|fn|I|if|in|L|loop|N|null|R|return|S|switch|T|V|var|X)(?=[^\w']|$|\s)/g},
     {class: "operator", filter: /()(#lt|#rt|#61|#41)/g},
@@ -106,16 +110,17 @@ textarea.addEventListener('keydown',(e) => {
             var li = document.createElement('li');
             if(modules.indexOf(elem)!=-1){
                 li.textContent = "module\t"
-            } else if(functions.indexOf(elem)!=-1)
+            } else if(functions.indexOf(elem)!=-1){
                 li.textContent = "fn\t"
+            }
             li.textContent += elem;
             li.addEventListener("click",(e2)=>{
-                var pastevalue = li.textContent.replaceAll(/(?<=\().*(?=\))|fn|module|\t/g,'');
+                var pastevalue = li.textContent.replaceAll(/(?<=\().*(?=\))|fn\t|module|\t/g,'');
                 textarea.value = textarea.value.substring(0, start - temp.length) +
                     pastevalue + textarea.value.substring(end);
                 textarea.selectionStart =
                     textarea.selectionEnd = start + pastevalue.length-temp.length;
-                if(li.textContent.startsWith("fn")){ //print(*cursor here*)
+                if(li.textContent.startsWith("fn\t")){ //print(*cursor here*)
                     textarea.selectionStart--;
                     textarea.selectionEnd--;
                 }
@@ -142,7 +147,7 @@ textarea.addEventListener('keydown',(e) => {
     } else if ((e.key=="Enter")&&autoul.children.length!=0){
         e.preventDefault();
         var cur_sel = autoul.getElementsByClassName('selected')[0];
-        var curselvalue = cur_sel.textContent.replaceAll(/fn|module|\t/g,'');
+        var curselvalue = cur_sel.textContent.replaceAll(/fn\t|module|\t/g,'');
         if(F1_click){
             var href = "http://11l-lang.org/doc/";
             if(modules.indexOf(curselvalue)!=-1){
@@ -152,6 +157,14 @@ textarea.addEventListener('keydown',(e) => {
                     href += "built-in-modules/"+curselvalue+"/";
             } else if(functions.indexOf(curselvalue)!=-1)
                 href += "built-in-functions/"
+              else if(keyWords.indexOf(curselvalue)!=-1){
+                keyWord = curselvalue.replaceAll(/(.*)\..*/g,'$1');
+                var indx;
+                if((indx = keyWords.indexOf(keyWord))<=11&&(indx!=-1))
+                    href += keyLetters[indx]
+                else
+                    href += curselvalue
+            }
             window.open(href,"_blank");
         } else {
             cur_sel.click();
