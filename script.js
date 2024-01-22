@@ -115,6 +115,10 @@ textarea.addEventListener('keydown',(e) => {
                     pastevalue + textarea.value.substring(end);
                 textarea.selectionStart =
                     textarea.selectionEnd = start + pastevalue.length-temp.length;
+                if(li.textContent.startsWith("fn")){ //print(*cursor here*)
+                    textarea.selectionStart--;
+                    textarea.selectionEnd--;
+                }
                 adaptive();
             })
             autoul.appendChild(li);
@@ -138,14 +142,15 @@ textarea.addEventListener('keydown',(e) => {
     } else if ((e.key=="Enter")&&autoul.children.length!=0){
         e.preventDefault();
         var cur_sel = autoul.getElementsByClassName('selected')[0];
+        var curselvalue = cur_sel.textContent.replaceAll(/fn|module|\t/g,'');
         if(F1_click){
             var href = "http://11l-lang.org/doc/";
-            if(modules.indexOf(cur_sel.textContent)!=-1){
-                if((cur_sel.textContent=="maxheap")||(cur_sel.textContent=="minheap"))
+            if(modules.indexOf(curselvalue)!=-1){
+                if((curselvalue=="maxheap")||(curselvalue=="minheap"))
                     href += "built-in-modules/minmaxheap/";
                 else
-                    href += "built-in-modules/"+cur_sel.textContent+"/";
-            } else if(functions.indexOf(cur_sel.textContent)!=-1)
+                    href += "built-in-modules/"+curselvalue+"/";
+            } else if(functions.indexOf(curselvalue)!=-1)
                 href += "built-in-functions/"
             window.open(href,"_blank");
         } else {
