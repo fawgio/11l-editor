@@ -1,5 +1,9 @@
 # 11l Editor
 It's a non-official editor and syntax highlighter for 11l. It can help you read code and write it without making syntax errors. It can help you write code faster with the autocompletion. Also there is the dark theme (your eyes will thank you).
+## How to use
+1. Download the last release and run *.html
+2. Or open the [11l-editor site](https://fawgio.github.io/11l-editor/index.html)
+   1. And click "Get Started"
 ## Supported features
 - Syntax highlighting
 - Writing pared quotes ‘ on alt+9 and ’ on alt+0
