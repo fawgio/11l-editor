@@ -158,7 +158,7 @@ textarea.addEventListener('keydown',(e) => {
             } else if(functions.indexOf(curselvalue)!=-1)
                 href += "built-in-functions/"
               else if(keyWords.indexOf(curselvalue)!=-1){
-                keyWord = curselvalue.replaceAll(/(.*)\..*/g,'$1');
+                keyWord = curselvalue.replaceAll(/([^.]*)\..*/g,'$1');
                 var indx;
                 if((indx = keyWords.indexOf(keyWord))<=11&&(indx!=-1))
                     href += keyLetters[indx]
