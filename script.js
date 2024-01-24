@@ -163,7 +163,7 @@ textarea.addEventListener('keydown',(e) => {
                 if((indx = keyWords.indexOf(keyWord))<=11&&(indx!=-1))
                     href += keyLetters[indx]
                 else
-                    href += curselvalue
+                    href += keyWord
             }
             window.open(href,"_blank");
         } else {
