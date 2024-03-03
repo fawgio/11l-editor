@@ -350,3 +350,4 @@ function highlight(tokens,theme){
 		}
 	});
 	return sHl;
+}
