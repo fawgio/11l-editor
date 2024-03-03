@@ -16,10 +16,12 @@ body {
     position: relative;
     margin: 10px;
     height: 90%;
+    tab-size: 4;
 }
 
 .text, .textarea{
     font-size: 12px;
+    tab-size: 4;
 }
 
 .text {
