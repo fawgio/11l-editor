@@ -19,46 +19,13 @@ const functions = ['print(object = ‘’, end = "\\n")','input([prompt])','asse
                     'hex(x)','bin(x)','rotl(value, shift)','rotr(value, shift)'];
 const auto = keyWords.concat(functions).concat(modules);
 
-const highlighterRules = [
-    {class: "string", filter: /(\\\\.*|#41#41.*|\\\[[^\[]*\]|\\\([^\)]*\)|\\{[^}]*}|\\‘[^’]*’|(?:‘)[^’]*(?:’))|((?:")[^"]*(?:"))/g},
-    {class: "string", filter: /(\\\\.*|#41#41.*|\\\[[^\[]*\]|\\\([^\)]*\)|\\{[^}]*}|\\‘[^’]*’|(?:")[^"]*(?:"))|((?:‘)[^’]*(?:’))/g},
-    {class: "comment", filter: /((?:")[^"]*(?:")|(?:‘)[^’]*(?:’))|(\\\\.*|#41#41.*)/g},
-    {class: "comment", filter: /()(\\\[[^\[]*\])/gsm},
-    {class: "comment", filter: /()(\\\([^\)]*\))/gsm},
-    {class: "comment", filter: /()(\\{[^}]*})/gsm},
-    {class: "comment", filter: /()(\\‘[^’]*’)/gsm},
-    {class: "key_word", filter: /()(?<=[^\w]|^|\s)(F\.virtual\.abstract|F\.virtual\.assign|F\.virtual\.final|F\.virtual\.new|F\.virtual\.override|fn\.virtual\.abstract|fn\.virtual\.assign|fn\.virtual\.final|fn\.virtual\.new|fn\.virtual\.override)(?=[^\w]|$|\s)/g},
-    {class: "key_word", filter: /()(?<=[^\w]|^|\s)(exception\.catch|exception\.try|exception\.try_end|F\.args|F\.destructor|F\.virtual|fn\.args|fn\.destructor|fn\.virtual|fn\.virtual\.abstract|fn\.virtual\.assign|fn\.virtual\.final|fn\.virtual\.new|fn\.virtual\.override|I\.likely|I\.unlikely|if\.likely|if\.unlikely|L\.break|L\.continue|L\.index|L\.last_iteration|L\.next|L\.on_break|L\.on_continue|L\.prev|L\.remove_current_element_and_break|L\.remove_current_element_and_continue|L\.was_no_break|loop\.break|loop\.continue|loop\.index|loop\.last_iteration|loop\.next|loop\.on_break|loop\.on_continue|loop\.prev|loop\.remove_current_element_and_break|loop\.remove_current_element_and_continue|loop\.was_no_break|S\.break|S\.fallthrough|switch\.break|switch\.fallthrough|T\.base|T\.enum|T\.interface|type|type\.base|type\.enum|type\.interface|X\.catch|X\.try|X\.try_end)(?=[^\w]|$|\s)/g},
-    {class: "key_word", filter: /()(?<=[^\w']|^|\s)(C|E|else|exception|F|fn|I|if|in|L|loop|N|null|R|return|S|switch|T|V|var|X)(?=[^\w']|$|\s)/g},
-    {class: "operator", filter: /()(#lt|#rt|#61|#41)/g},
-    {class: "operator", filter: /()(?<![\dABCDEF])(')(?![\dABCDEF])/g},
-    {class: "operator", filter: /()([^\w\s<=>#""‘’/'])/g},
-    {class: "digit", filter: /()(?<!#\d*)(?<!_[\w]*)(?<!\w)([\d']+[bo])(?![\w]*_)/g},
-    {class: "digit", filter: /()(?<!#\d*)(?<![_'][\w]*)(?<!\w)([\d]+)(?![\w]*[_'bo])/g},
-    {class: "digit", filter: /()(?<!#\d*)(?<!_[\w]*)(?<!\w)([\dABCDEF]+'[\dABCDEF]+)(?![\w]_*)/g}
-];
-
 const highlighter = function (input, output, theme) {
     output.classList.remove(output.classList[1])
     output.classList.add("text_"+theme)
-    var text = input.value;
+    output.innerHTML = input.value;
 
-    text = text.replaceAll("<", "#lt");
-    text = text.replaceAll(">", "#rt");
-    text = text.replaceAll("=", "#61");
-    text = text.replaceAll("/", "#41");
-
-    for (var i of highlighterRules) {
-        text = text.replaceAll(i.filter, `$1<span class=${i.class+"_"+theme}>$2</span>`);
-    }
-
-    text = text.replaceAll("#lt", "<");
-    text = text.replaceAll("#rt", ">");
-    text = text.replaceAll("#61", "=");
-    text = text.replaceAll("#41", "/");
-
-    text = text.replaceAll("\n", "<br>");
-
+    var text = highlight(tokenize(input.value),theme);
+  
     if(text.endsWith("<br>")){ //see issue #3 https://github.com/fawgio/11l-editor/issues/3
         text+="<br>";
     }
