@@ -137,6 +137,13 @@ body {
     font-weight: normal;
 }
 
+#runbutton:hover::after{
+  content: "it works a little bit";
+  background-color: white;
+  border: solid 1px black;
+  border-radius: 4px;
+}
+
 .string_dark,.string_dark *{
     color: #00afff; 
     font-weight: normal;
