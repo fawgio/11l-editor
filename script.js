@@ -3,6 +3,7 @@ const textDiv = document.getElementById('text');
 const loadbutton = document.getElementById('loadbutton');
 const savebutton = document.getElementById('savebutton');
 const changetheme = document.getElementById('changetheme');
+const runbutton = document.getElementById('runbutton');
 const autoul = document.getElementById('autocomplete');
 var theme = "light"
 
@@ -184,6 +185,11 @@ savebutton.addEventListener("click", () => {
     link.click();
     URL.revokeObjectURL(file);
 });
+
+runbutton.addEventListener("click",()=>{
+    compile(parse(tokenize(textarea.value,true)));
+    run();
+})
 
 textarea.addEventListener('scroll', (e) => {
     textDiv.scrollTop = textarea.scrollTop

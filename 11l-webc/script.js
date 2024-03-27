@@ -7,7 +7,7 @@ class Token{
 	}
 }
 
-function tokenize(str){
+function tokenize(str,ignorews=false){
 	var char;
 	var token;
 	var tokens = [];
@@ -105,8 +105,10 @@ function tokenize(str){
 			else i--;
 		} else if(char==" "){
 			token.type = "space";
+			if (ignorews) {continue;}
 		} else if(char=="\t"){
 			token.type = "tab";
+			if (ignorews) {continue;}
 		} else if(char=="("){
 			token.type = "opar";
 		} else if(char==")"){
@@ -350,4 +352,149 @@ function highlight(tokens,theme){
 		}
 	});
 	return sHl;
+}
+
+
+class Node{
+	type;
+	value;
+	children;
+	constructor(){
+		this.type="";
+		this.value="";
+		this.children=[];
+	}
+}
+class ParserError{
+	message;
+	constructor(message){
+		this.message=message;
+	}
+}
+
+var i = -1;
+var	tabc = 0;
+var tokens;
+
+function term(){
+	var node = new Node();
+	switch(tokens[i+1].type){
+		case "id": 
+			i++;
+			node.type = "id"
+			node.value = tokens[i].value
+			if(tokens[i+1].type=="opar"){
+				i++;
+			  	node.type = "fcall"
+			  	while(tokens[i+1].type!="cpar"){
+			  		node.children = node.children.concat([expr()])
+			  		if(tokens[i+1].type=="comma"){
+			  			i++;
+			  		}
+			  	}
+				i++;
+			}
+			break;
+		case "digit": 
+			i++;
+			node.type = "digit"
+			node.value = tokens[i].value
+			break;
+	}
+	return node;
+}
+
+function expr(){
+	var node = term()
+	switch(tokens[i+1].value){
+		case"+": 
+			i++;
+			node.children = node.children.concat([structuredClone(node)]);
+			node.children = node.children.concat([expr()]);
+			node.type = "add"
+			break;
+		case"-":
+			i++;
+			node.children = node.children.concat([structuredClone(node)]);
+			node.children = node.children.concat([expr()]);
+			node.type = "sub"
+			break;
+	}
+	return node;
+}
+
+function parse(tokens_1) {
+	var main = new Node();
+	i=-1;
+	tabc=0;
+	tokens = tokens_1.concat(new Token()); // EOF Token
+	main.type = "main";
+	main.children = main.children.concat([expr()]);
+	return main;
+}
+
+var compiled = [];
+
+function compile(node){
+	switch(node.type){
+		case "main":
+			compiled = []; 
+			node.children.forEach(function(e){compile(e)})
+			compiled.push("EXIT");
+			break;
+		case "add":
+			node.children.forEach(function(e){compile(e)})
+			compiled.push("ADD");
+			break;
+		case "sub":
+			node.children.forEach(function(e){compile(e)})
+			compiled.push("SUB");
+			break;
+		case "digit":
+			compiled.push("PUSH");
+			compiled.push(parseInt(node.value))
+			break;
+		case "fcall":
+			node.children.forEach(function(e){compile(e)})
+			compiled.push("CALL")
+			compiled.push(node.value);
+			break;
+	}
+}
+
+function run(){
+	commands = compiled;
+	var n = 0;
+	var stack = [];
+	while(commands[n]!="EXIT"){
+		switch(commands[n]){
+			case "PUSH":
+				stack.push(commands[n+1])
+				n+=2;
+				break;
+			case "POP":
+				stack.pop()
+				n+=1;
+				break;
+			case "ADD":
+				stack.push(stack.pop()+stack.pop())
+				n+=1;
+				break;
+			case "SUB":
+				stack.push(stack.pop()-stack.pop())
+				n+=1;
+				break;
+			case "CALL":
+				switch(commands[n+1]){
+					case "print":
+						alert("11l says: "+stack.pop())
+						break;
+					case "input":
+						stack.push(prompt("11l asks:"))
+						break;
+				}
+				n+=2;
+				break;
+		}
+	}
 }
