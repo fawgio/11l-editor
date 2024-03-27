@@ -27,7 +27,7 @@ const highlighter = function (input, output, theme) {
 
     var text = highlight(tokenize(input.value),theme);
   
-    if(text.endsWith("<br>")){ //see issue #3 https://github.com/fawgio/11l-editor/issues/3
+    if(text.endsWith("<br>")||text.endsWith("\n")){ //see issue #3 https://github.com/fawgio/11l-editor/issues/3
         text+="<br>";
     }
 
