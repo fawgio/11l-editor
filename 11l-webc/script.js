@@ -284,8 +284,10 @@ function highlight(tokens,theme){
 			sHl+="<span class=string_"+theme+">"+token.value+"</span>";
 		} else if((token.type == "single-line comment")||(token.type == "multi-line comment")){
 			sHl+="<span class=comment_"+theme+">"+token.value+"</span>";
-		} else if (token.type == "id"||token.type == "break"){
+		} else if (token.type == "id"){
 			sHl+=token.value;
+		} else if(token.type == "break"){
+			sHl+="<br>"
 		} else {
 			sHl+="<span class=operator_"+theme+">";
 		if(token.type == "inc"){
@@ -344,8 +346,6 @@ function highlight(tokens,theme){
 			sHl+="%="
 		} else if(token.type == "powassign"){
 			sHl+="^="
-		} else if(token.type == "break"){
-			sHl+="<br>"
 		} else
 			sHl+=token.value;
 			sHl+="</span>";
