@@ -284,7 +284,7 @@ function highlight(tokens,theme){
 			sHl+="<span class=string_"+theme+">"+token.value+"</span>";
 		} else if((token.type == "single-line comment")||(token.type == "multi-line comment")){
 			sHl+="<span class=comment_"+theme+">"+token.value+"</span>";
-		} else if (token.type == "id"){
+		} else if (token.type == "id"||token.type == "break"){
 			sHl+=token.value;
 		} else {
 			sHl+="<span class=operator_"+theme+">";
