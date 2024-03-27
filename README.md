@@ -11,6 +11,8 @@ It's a non-official editor and syntax highlighter for 11l. It can help you read 
 - Uploading and saving files
 - Dark and light themes
 - 11l Documentation search(on F1+Enter, while selecting a function or module in autocompletion menu)
+### Partial supported features
+- Online compiler
 ## Example
 An example from [11l official site](http://11l-lang.org/)
 ```
