@@ -128,7 +128,8 @@ function tokenize(str,ignorews=false){
 		} else if(char==","){
 			token.type = "comma";
 		} else if(char=="\n"){
-			token.type = "break";			
+			token.type = "break";
+            if (ignorews) {continue;}
 		} else if(char=="!"&&str[i+1]=='='){
 			token.type = "noteq";
 			i++;
@@ -222,7 +223,7 @@ function tokenize(str,ignorews=false){
 			}
 		} else if((char.search(/[0-1]/)==0)&&(str[i+1]=="B")){
 			token.type = "bool";
-			token.value = char;
+			token.value = char+"B";
 			i++;
 		} else if(char == '"'){
 			token.type = "string";
@@ -400,27 +401,71 @@ function term(){
 			node.type = "digit"
 			node.value = tokens[i].value
 			break;
+        case "string": 
+			i++;
+			node.type = "string"
+			node.value = tokens[i].value.substring(1,tokens[i].value.length-1);
+			break;
 	}
 	return node;
 }
 
-function expr(){
+function div(){
 	var node = term()
-	switch(tokens[i+1].value){
-		case"+": 
-			i++;
-			node.children = node.children.concat([structuredClone(node)]);
-			node.children = node.children.concat([expr()]);
-			node.type = "add"
-			break;
-		case"-":
-			i++;
-			node.children = node.children.concat([structuredClone(node)]);
-			node.children = node.children.concat([expr()]);
-			node.type = "sub"
-			break;
-	}
+    while(tokens[i+1].value == "*"||tokens[i+1].value == "/")
+        switch(tokens[i+1].value){
+            case"*": 
+                i++;
+                node.children = node.children.concat([structuredClone(node)]);
+                node.children = node.children.concat([term()]);
+                node.type = "mul"
+                break;
+            case"/":
+                i++;
+                node.children = node.children.concat([structuredClone(node)]);
+                node.children = node.children.concat([term()]);
+                node.type = "div"
+                break;
+        }
 	return node;
+}
+
+function expr(){
+	var node = div()
+    while(tokens[i+1].value == "+"||tokens[i+1].value == "-")
+        switch(tokens[i+1].value){
+            case"+": 
+                i++;
+                node.children = node.children.concat([structuredClone(node)]);
+                node.children = node.children.concat([div()]);
+                node.type = "add"
+                break;
+            case"-":
+                i++;
+                node.children = node.children.concat([structuredClone(node)]);
+                node.children = node.children.concat([div()]);
+                node.type = "sub"
+                break;
+        }
+	return node;
+}
+
+function statement(){
+	var n = null;
+    if (tokens[i+1].type=="obra")
+    {
+        i++;
+        n = new Node();
+        while (tokens[i+1].type != "cbra")
+        {
+            n.type = "bpart"
+            n.children = [structuredClone(n),statement()]
+        }
+        i++;
+    } else {
+        n = expr()
+    }
+	return n;
 }
 
 function parse(tokens_1) {
@@ -429,7 +474,7 @@ function parse(tokens_1) {
 	tabc=0;
 	tokens = tokens_1.concat(new Token()); // EOF Token
 	main.type = "main";
-	main.children = main.children.concat([expr()]);
+	main.children = main.children.concat([statement()]);
 	return main;
 }
 
@@ -450,10 +495,25 @@ function compile(node){
 			node.children.forEach(function(e){compile(e)})
 			compiled.push("SUB");
 			break;
+        case "mul":
+			node.children.forEach(function(e){compile(e)})
+			compiled.push("MUL");
+			break;
+        case "div":
+			node.children.forEach(function(e){compile(e)})
+			compiled.push("DIV");
+			break;
 		case "digit":
 			compiled.push("PUSH");
 			compiled.push(parseInt(node.value))
 			break;
+        case "string":
+			compiled.push("PUSH");
+			compiled.push(node.value)
+			break;
+        case "bpart":
+            node.children.forEach(function(e){compile(e)})
+            break;
 		case "fcall":
 			node.children.forEach(function(e){compile(e)})
 			compiled.push("CALL")
@@ -481,16 +541,28 @@ function run(){
 				n+=1;
 				break;
 			case "SUB":
-				stack.push(stack.pop()-stack.pop())
+				stack.push(-stack.pop()+stack.pop())
+				n+=1;
+				break;
+            case "MUL":
+				stack.push(stack.pop()*stack.pop())
+				n+=1;
+				break;
+			case "DIV":
+				stack.push(1/stack.pop()*stack.pop())
 				n+=1;
 				break;
 			case "CALL":
 				switch(commands[n+1]){
 					case "print":
-						alert("11l says: "+stack.pop())
+                        var text = [stack.pop(),(stack.length>0?stack.pop():"\n")];
+                        if (text[1]!="\n"){
+                            text = text.reverse();
+                        }
+						alert("11l says: "+text.join(""))
 						break;
 					case "input":
-						stack.push(prompt("11l asks:"))
+						stack.push(prompt("11l asks: "+(stack.length>0?stack.pop():"")))
 						break;
 				}
 				n+=2;
