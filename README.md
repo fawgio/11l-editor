@@ -1,4 +1,7 @@
 # 11l Editor
+> [!NOTE]
+> The project was closed and [Aloe IDE](https://github.com/fawgio/Aloe-IDE) was opened
+> 
 It's a non-official editor and syntax highlighter for 11l. It can help you read code and write it without making syntax errors. It can help you write code faster with the autocompletion. Also there is the dark theme (your eyes will thank you).
 ## How to use
 1. Download the last release and run *.html
